@@ -2,20 +2,20 @@ namespace StarbucksExample.Messages
 {
     public class PaymentResponseMessage
     {
-        public string OriginatorId { get; private set; }
-        public string RecipientId { get; private set; }
+        public string RegisterId { get; private set; }
+        public string CustomerId { get; private set; }
         public decimal PaymentAmountProvided { get; private set; }
 
-        private PaymentResponseMessage(string originatorId, string recipientId, decimal paymentAmountProvided)
+        private PaymentResponseMessage(string registerId, string customerId, decimal paymentAmountProvided)
         {
-            OriginatorId = originatorId;
-            RecipientId = recipientId;
+            RegisterId = registerId;
+            CustomerId = customerId;
             PaymentAmountProvided = paymentAmountProvided;
         }
 
-        public static PaymentResponseMessage Create(string originatorId, string recipientId, decimal paymentAmountProvided)
+        public static PaymentResponseMessage Create(string registerId, string customerId, decimal paymentAmountProvided)
         {
-            return new PaymentResponseMessage(originatorId, recipientId, paymentAmountProvided);
+            return new PaymentResponseMessage(registerId, customerId, paymentAmountProvided);
         }
     }
 }

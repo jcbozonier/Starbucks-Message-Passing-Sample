@@ -4,22 +4,22 @@ namespace StarbucksExample.Messages
 {
     public class DrinkOrderRequestMessage
     {
-        public string OriginationId { get; private set; }
+        public string RegisterId { get; private set; }
         public string Size { get; private set; }
         public string DrinkDescription { get; private set; }
-        public string RecipientId { get; private set; }
+        public string CustomerId { get; private set; }
 
-        private DrinkOrderRequestMessage(string originationId, string recipientId, string size, string drinkDescription)
+        private DrinkOrderRequestMessage(string registerId, string customerId, string size, string drinkDescription)
         {
-            OriginationId = originationId;
-            RecipientId = recipientId;
+            RegisterId = registerId;
+            CustomerId = customerId;
             Size = size;
             DrinkDescription = drinkDescription;
         }
 
-        public static DrinkOrderRequestMessage Create(string originationId, string recipientId, string size, string drinkDescription)
+        public static DrinkOrderRequestMessage Create(string registerId, string customerId, string size, string drinkDescription)
         {
-            return new DrinkOrderRequestMessage(originationId, recipientId, size, drinkDescription);
+            return new DrinkOrderRequestMessage(registerId, customerId, size, drinkDescription);
         }
     }
 }

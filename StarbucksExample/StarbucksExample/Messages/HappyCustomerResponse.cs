@@ -2,11 +2,11 @@ namespace StarbucksExample.Messages
 {
     public class HappyCustomerResponse
     {
-        public string OriginationId { get; private set; }
+        public string CustomerId { get; private set; }
 
-        public HappyCustomerResponse(string originationId)
+        public HappyCustomerResponse(string customerId)
         {
-            OriginationId = originationId;
+            CustomerId = customerId;
         }
     }
 }

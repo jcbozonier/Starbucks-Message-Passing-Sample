@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace StarbucksExample.MessagingSystem
+﻿namespace StarbucksExample.MessagingSystem
 {
-    public interface IQueue
+    public interface IQueue : IChannel
     {
-        void Enqueue(object o);
-        object Dequeue();
         bool IsEmpty();
     }
 }

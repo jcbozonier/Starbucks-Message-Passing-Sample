@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -20,7 +21,7 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            _RequestChannel.Enqueue(DrinkRequestMessage.Create(OriginationId, "Tall", "Half-Caf Double Decaf"));
+            _SendOutDrinkRequests();
 
             while (!_Done)
             {
@@ -32,6 +33,15 @@ namespace StarbucksExample.Actors
             }
         }
 
+        private void _SendOutDrinkRequests()
+        {
+            var drinkRequests = Enumerable.Range(0, 10000).Select(
+                x => DrinkRequestMessage.Create(x.ToString(), "Tall", "Half-Caf Double Decaf")).ToArray();
+
+            foreach(var drinkRequest in drinkRequests)
+                _RequestChannel.Enqueue(drinkRequest);
+        }
+
         private object _ProcessMessage(object incomingMessage)
         {
             var registerResponse = incomingMessage as PaymentRequestMessage;
@@ -39,10 +49,10 @@ namespace StarbucksExample.Actors
             var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
 
             if(registerResponse != null)
-                return PaymentResponseMessage.Create(OriginationId, registerResponse.OriginationId, registerResponse.PaymentAmountRequested);
+                return PaymentResponseMessage.Create(registerResponse.CustomerId, registerResponse.RegisterId, registerResponse.PaymentAmountRequested);
             
             if(myDrink != null)
-                return new HappyCustomerResponse(OriginationId);
+                return new HappyCustomerResponse(myDrink.CustomerId);
 
             if (terminateProcessRequest != null)
                 _Done = true;

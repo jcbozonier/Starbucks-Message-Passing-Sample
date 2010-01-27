@@ -8,12 +8,12 @@ namespace StarbucksExample.Actors
     {
         private readonly IChannel _RequestChannel;
         private readonly IChannel _ResponseChannel;
-        public readonly string OriginationId;
+        public readonly string RegisterId;
         private bool _Done;
 
         public RegisterActor(IChannel requestChannel, IChannel responseChannel)
         {
-            OriginationId = new Guid().ToString();
+            RegisterId = new Guid().ToString();
             _RequestChannel = requestChannel;
             _ResponseChannel = responseChannel;
         }
@@ -37,10 +37,10 @@ namespace StarbucksExample.Actors
             var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
 
             if(customerResponse != null)
-                return PaymentRequestMessage.Create(OriginationId, customerResponse.OriginationId, (decimal)2.15);
+                return PaymentRequestMessage.Create(RegisterId, customerResponse.CustomerId, (decimal)2.15);
             
             if(paymentResponse != null)
-                return DrinkOrderRequestMessage.Create(OriginationId, customerResponse.OriginationId, customerResponse.Size, customerResponse.DrinkDescription);
+                return DrinkOrderRequestMessage.Create(RegisterId, customerResponse.CustomerId, customerResponse.Size, customerResponse.DrinkDescription);
 
             if (terminateProcessRequest != null)
                 _Done = true;

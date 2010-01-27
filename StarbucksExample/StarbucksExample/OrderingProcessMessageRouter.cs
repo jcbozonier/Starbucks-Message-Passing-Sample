@@ -15,7 +15,8 @@ namespace StarbucksExample
         private IChannel _OutgoingBaristaMessages;
         private IChannel _OutgoingCustomerMessages;
         private IChannel _OutgoingRegisterMessages;
-        private IChannel _abandonedMessagesChannel;
+        private IChannel _AbandonedMessagesChannel;
+        private IQueue _OutgoingControllerMessages;
 
         public void Process()
         {
@@ -26,12 +27,12 @@ namespace StarbucksExample
                 var incomingCustomerMessage = _IncomingCustomerMessages.Dequeue();
                 var incomingRegisterMessage = _IncomingRegisterMessages.Dequeue();
 
-                var outgoingBaristaMessage = _GetAppropriateOutboundChannelForBarista(incomingBaristaMessage);
-                var outgoingCustomerMessage = _GetAppropriateOutboundChannelForCustomer(incomingCustomerMessage);
+                var appropriateOutboundChannelForBarista = _GetAppropriateOutboundChannelForBarista(incomingBaristaMessage);
+                var appropriateOutboundChannelForCustomer = _GetAppropriateOutboundChannelForCustomer(incomingCustomerMessage);
                 var appropriateOutboundChannelForRegister = _GetAppropriateOutboundChannelForRegister(incomingRegisterMessage);
 
-                _OutgoingBaristaMessages.Enqueue(outgoingBaristaMessage);
-                _OutgoingCustomerMessages.Enqueue(outgoingCustomerMessage);
+                appropriateOutboundChannelForBarista.Enqueue(appropriateOutboundChannelForBarista);
+                appropriateOutboundChannelForCustomer.Enqueue(appropriateOutboundChannelForCustomer);
                 appropriateOutboundChannelForRegister.Enqueue(incomingRegisterMessage);
 
                 if (incomingControllerMessage is TerminateProcessMessage)
@@ -50,7 +51,7 @@ namespace StarbucksExample
                 incomingRegisterMessage is PaymentRequestMessage)
                 return _OutgoingCustomerMessages;
 
-            return _abandonedMessagesChannel;
+            return _AbandonedMessagesChannel;
         }
 
         private IChannel _GetAppropriateOutboundChannelForCustomer(object incomingCustomerMessage)
@@ -59,7 +60,10 @@ namespace StarbucksExample
                 incomingCustomerMessage is PaymentResponseMessage)
                 return _OutgoingRegisterMessages;
 
-            return _abandonedMessagesChannel;
+            if (incomingCustomerMessage is HappyCustomerResponse)
+                return _OutgoingControllerMessages;
+
+            return _AbandonedMessagesChannel;
         }
 
         private IChannel _GetAppropriateOutboundChannelForBarista(object incomingBaristaMessage)
@@ -67,7 +71,7 @@ namespace StarbucksExample
             if (incomingBaristaMessage is DrinkResponseMessage)
                 return _OutgoingCustomerMessages;
 
-            return _abandonedMessagesChannel;
+            return _AbandonedMessagesChannel;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace StarbucksExample.Actors
                 var terminationRequest = incomingMessage as TerminateProcessMessage;
 
                 if(drinkOrderRequest != null)
-                    _RequestChannel.Enqueue(DrinkResponseMessage.Create(OriginationId, drinkOrderRequest.RecipientId,
+                    _RequestChannel.Enqueue(DrinkResponseMessage.Create(drinkOrderRequest.CustomerId,
                                                                     drinkOrderRequest.Size,
                                                                     drinkOrderRequest.DrinkDescription));
 
