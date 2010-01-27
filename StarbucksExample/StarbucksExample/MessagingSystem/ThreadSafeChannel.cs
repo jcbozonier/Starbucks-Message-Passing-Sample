@@ -6,7 +6,7 @@ namespace StarbucksExample.MessagingSystem
     ///
     /// Summary description for ThreadSafeQueue.
     ///
-    public class ThreadSafeChannel : IChannel, IQueue
+    public class ThreadSafeChannel : IChannel
     {
         private System.Collections.Queue q = new System.Collections.Queue();
         private readonly ManualResetEvent newItemEntered = new ManualResetEvent(false);
@@ -37,14 +37,6 @@ namespace StarbucksExample.MessagingSystem
                 return result;
             }
 
-        }
-
-        public bool IsEmpty()
-        {
-            lock(q)
-            {
-                return q.Count == 0; 
-            }
         }
     }
 }
