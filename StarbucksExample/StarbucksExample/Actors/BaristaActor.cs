@@ -9,6 +9,7 @@ namespace StarbucksExample.Actors
         private readonly IQueue _RequestChannel;
         private readonly IQueue _ResponseChannel;
         public readonly string OriginationId;
+        private bool _Done;
 
         public BaristaActor(IQueue requestChannel, IQueue responseChannel)
         {
@@ -19,8 +20,20 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            var drinkOrderRequest = _ResponseChannel.Dequeue() as DrinkOrderRequestMessage;
-            _RequestChannel.Enqueue(DrinkResponseMessage.Create(OriginationId, drinkOrderRequest.RecipientId, drinkOrderRequest.Size, drinkOrderRequest.DrinkDescription));
+            while (!_Done)
+            {
+                var incomingMessage = _ResponseChannel.Dequeue();
+                var drinkOrderRequest = incomingMessage as DrinkOrderRequestMessage;
+                var terminationRequest = incomingMessage as TerminateProcessMessage;
+
+                if(drinkOrderRequest != null)
+                    _RequestChannel.Enqueue(DrinkResponseMessage.Create(OriginationId, drinkOrderRequest.RecipientId,
+                                                                    drinkOrderRequest.Size,
+                                                                    drinkOrderRequest.DrinkDescription));
+
+                if(terminationRequest != null)
+                    _Done = true;
+            }
         }
     }
 }

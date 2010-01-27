@@ -9,6 +9,7 @@ namespace StarbucksExample.Actors
         private readonly IQueue _RequestChannel;
         private readonly IQueue _ResponseChannel;
         public readonly string OriginationId;
+        private bool _Done;
 
         public RegisterActor(IQueue requestChannel, IQueue responseChannel)
         {
@@ -19,11 +20,32 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            var customerResponse = _ResponseChannel.Dequeue() as DrinkRequestMessage;
-            _RequestChannel.Enqueue(PaymentRequestMessage.Create(OriginationId, customerResponse.OriginationId, (decimal)2.15));
-            var paymentResponse = _ResponseChannel.Dequeue() as PaymentResponseMessage;
-            _RequestChannel.Enqueue(DrinkOrderRequestMessage.Create(OriginationId, customerResponse.OriginationId, customerResponse.Size, customerResponse.DrinkDescription));
+            while (!_Done)
+            {
+                var incomingMessage = _ResponseChannel.Dequeue();
+                var outgoingMessage = _Process(incomingMessage);
 
+                if (outgoingMessage != null)
+                    _RequestChannel.Enqueue(outgoingMessage);
+            }
+        }
+
+        private object _Process(object incomingMessage)
+        {
+            var customerResponse = incomingMessage as DrinkRequestMessage;
+            var paymentResponse = incomingMessage as PaymentResponseMessage;
+            var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
+
+            if(customerResponse != null)
+                return PaymentRequestMessage.Create(OriginationId, customerResponse.OriginationId, (decimal)2.15);
+            
+            if(paymentResponse != null)
+                return DrinkOrderRequestMessage.Create(OriginationId, customerResponse.OriginationId, customerResponse.Size, customerResponse.DrinkDescription);
+
+            if (terminateProcessRequest != null)
+                _Done = true;
+
+            return null;
         }
     }
 }

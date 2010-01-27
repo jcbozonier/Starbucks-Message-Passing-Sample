@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Actors\BaristaActor.cs" />
     <Compile Include="Messages\DrinkOrderRequestMessage.cs" />
+    <Compile Include="Messages\TerminateProcessMessage.cs" />
     <Compile Include="OrderingProcessMessageRouter.cs" />
     <Compile Include="Actors\RegisterActor.cs" />
     <Compile Include="Actors\CustomerActor.cs" />

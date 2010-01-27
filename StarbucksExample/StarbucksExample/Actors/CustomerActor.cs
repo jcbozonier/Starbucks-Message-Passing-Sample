@@ -9,6 +9,7 @@ namespace StarbucksExample.Actors
         private readonly IQueue _RequestChannel;
         private readonly IQueue _ResponseChannel;
         public readonly string OriginationId;
+        private bool _Done;
 
         public CustomerActor(IQueue requestChannel, IQueue responseChannel)
         {
@@ -20,10 +21,33 @@ namespace StarbucksExample.Actors
         public void Process()
         {
             _RequestChannel.Enqueue(DrinkRequestMessage.Create(OriginationId, "Tall", "Half-Caf Double Decaf"));
-            var registerResponse = _ResponseChannel.Dequeue() as PaymentRequestMessage;
-            _RequestChannel.Enqueue(PaymentResponseMessage.Create(OriginationId, registerResponse.OriginationId, registerResponse.PaymentAmountRequested));
-            var myDrink = _ResponseChannel.Dequeue() as DrinkResponseMessage;
-            _RequestChannel.Enqueue(new HappyCustomerResponse(OriginationId));
+
+            while (!_Done)
+            {
+                var incomingMessage = _ResponseChannel.Dequeue();
+                var outgoingMessage = _ProcessMessage(incomingMessage);
+
+                if (outgoingMessage != null)
+                    _ResponseChannel.Enqueue(outgoingMessage);
+            }
+        }
+
+        private object _ProcessMessage(object incomingMessage)
+        {
+            var registerResponse = incomingMessage as PaymentRequestMessage;
+            var myDrink = incomingMessage as DrinkResponseMessage;
+            var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
+
+            if(registerResponse != null)
+                return PaymentResponseMessage.Create(OriginationId, registerResponse.OriginationId, registerResponse.PaymentAmountRequested);
+            
+            if(myDrink != null)
+                return new HappyCustomerResponse(OriginationId);
+
+            if (terminateProcessRequest != null)
+                _Done = true;
+
+            return null;
         }
     }
 }
