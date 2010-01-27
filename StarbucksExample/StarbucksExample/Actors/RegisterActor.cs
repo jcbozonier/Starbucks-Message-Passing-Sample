@@ -37,15 +37,18 @@ namespace StarbucksExample.Actors
             var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
 
             if(customerResponse != null)
-                return PaymentRequestMessage.Create(RegisterId, customerResponse.CustomerId, (decimal)2.15);
+                return PaymentRequestMessage.Create(RegisterId, customerResponse.CustomerId, (decimal)2.15, customerResponse);
             
             if(paymentResponse != null)
-                return DrinkOrderRequestMessage.Create(RegisterId, customerResponse.CustomerId, customerResponse.Size, customerResponse.DrinkDescription);
+                return DrinkOrderRequestMessage.Create(RegisterId, paymentResponse.CustomerId, paymentResponse.CustomerOrder.Size, paymentResponse.CustomerOrder.DrinkDescription);
 
             if (terminateProcessRequest != null)
                 _Done = true;
 
-            return null;
+            if (incomingMessage == null)
+                throw new InvalidOperationException("Received null message and this is invalid!");
+
+            throw new InvalidOperationException("Received an incorrect response type for this actor.");
         }
     }
 }

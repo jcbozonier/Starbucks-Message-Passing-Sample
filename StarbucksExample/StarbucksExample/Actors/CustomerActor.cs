@@ -28,13 +28,13 @@ namespace StarbucksExample.Actors
                 var outgoingMessage = _ProcessMessage(incomingMessage);
 
                 if (outgoingMessage != null)
-                    _ResponseChannel.Enqueue(outgoingMessage);
+                    _RequestChannel.Enqueue(outgoingMessage);
             }
         }
 
         private void _SendOutDrinkRequests()
         {
-            var drinkRequests = Enumerable.Range(0, 10000).Select(
+            var drinkRequests = Enumerable.Range(0, 100000).Select(
                 x => DrinkRequestMessage.Create(x.ToString(), "Tall", "Half-Caf Double Decaf")).ToArray();
 
             foreach(var drinkRequest in drinkRequests)
@@ -48,7 +48,7 @@ namespace StarbucksExample.Actors
             var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
 
             if(registerResponse != null)
-                return PaymentResponseMessage.Create(registerResponse.CustomerId, registerResponse.RegisterId, registerResponse.PaymentAmountRequested);
+                return PaymentResponseMessage.Create(registerResponse.CustomerId, registerResponse.RegisterId, registerResponse.PaymentAmountRequested, registerResponse.CustomerOrder);
             
             if(myDrink != null)
                 return new HappyCustomerResponse(myDrink.CustomerId);
@@ -56,7 +56,10 @@ namespace StarbucksExample.Actors
             if (terminateProcessRequest != null)
                 _Done = true;
 
-            return null;
+            if (incomingMessage == null)
+                throw new InvalidOperationException("Received null message and this is invalid!");
+
+            throw new InvalidOperationException("Received an incorrect response type for this actor.");
         }
     }
 }
