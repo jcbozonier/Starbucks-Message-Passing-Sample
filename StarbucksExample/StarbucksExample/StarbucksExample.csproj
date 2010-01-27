@@ -48,6 +48,7 @@
     <Compile Include="Actors\BaristaActor.cs" />
     <Compile Include="Messages\DrinkOrderRequestMessage.cs" />
     <Compile Include="Messages\TerminateProcessMessage.cs" />
+    <Compile Include="MessagingSystem\IQueue.cs" />
     <Compile Include="OrderingProcessMessageRouter.cs" />
     <Compile Include="Actors\RegisterActor.cs" />
     <Compile Include="Actors\CustomerActor.cs" />
@@ -56,8 +57,8 @@
     <Compile Include="Messages\DrinkRequestMessage.cs" />
     <Compile Include="Messages\PaymentRequestMessage.cs" />
     <Compile Include="Messages\PaymentResponseMessage.cs" />
-    <Compile Include="MessagingSystem\IQueue.cs" />
-    <Compile Include="MessagingSystem\ThreadSafeQueue.cs" />
+    <Compile Include="MessagingSystem\IChannel.cs" />
+    <Compile Include="MessagingSystem\ThreadSafeChannel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

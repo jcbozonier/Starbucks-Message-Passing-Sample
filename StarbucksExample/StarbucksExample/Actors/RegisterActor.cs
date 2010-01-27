@@ -6,12 +6,12 @@ namespace StarbucksExample.Actors
 {
     public class RegisterActor
     {
-        private readonly IQueue _RequestChannel;
-        private readonly IQueue _ResponseChannel;
+        private readonly IChannel _RequestChannel;
+        private readonly IChannel _ResponseChannel;
         public readonly string OriginationId;
         private bool _Done;
 
-        public RegisterActor(IQueue requestChannel, IQueue responseChannel)
+        public RegisterActor(IChannel requestChannel, IChannel responseChannel)
         {
             OriginationId = new Guid().ToString();
             _RequestChannel = requestChannel;

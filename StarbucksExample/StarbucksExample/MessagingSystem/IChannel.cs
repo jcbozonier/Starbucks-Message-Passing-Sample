@@ -5,10 +5,9 @@ using System.Text;
 
 namespace StarbucksExample.MessagingSystem
 {
-    public interface IQueue
+    public interface IChannel
     {
         void Enqueue(object o);
         object Dequeue();
-        bool IsEmpty();
     }
 }
