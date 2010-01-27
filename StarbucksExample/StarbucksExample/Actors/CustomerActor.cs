@@ -9,12 +9,11 @@ namespace StarbucksExample.Actors
     {
         private readonly IChannel _RequestChannel;
         private readonly IChannel _ResponseChannel;
-        public readonly string OriginationId;
         private bool _Done;
 
         public CustomerActor(IChannel requestChannel, IChannel responseChannel)
         {
-            OriginationId = new Guid().ToString();
+            new Guid().ToString();
             _RequestChannel = requestChannel;
             _ResponseChannel = responseChannel;
         }
