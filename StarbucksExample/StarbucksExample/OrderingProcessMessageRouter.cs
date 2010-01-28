@@ -7,36 +7,28 @@ namespace StarbucksExample
     public class OrderingProcessMessageRouter
     {
         private bool _Done;
-        private readonly IQueue _IncomingBaristaMessages;
-        private readonly IQueue _IncomingCustomerMessages;
-        private readonly IQueue _IncomingRegisterMessages;
-        private readonly IQueue _IncomingControllerMessages;
-
+        private readonly IPeekableChannel _IncomingMessages;
+        private readonly IPeekableChannel _IncomingControllerMessages;
         private readonly IChannel _OutgoingBaristaMessages;
         private readonly IChannel _OutgoingCustomerMessages;
         private readonly IChannel _OutgoingRegisterMessages;
         private readonly IChannel _AbandonedMessagesChannel;
-        private readonly IQueue _OutgoingControllerMessages;
+        private readonly IPeekableChannel _OutgoingControllerMessages;
 
-        public OrderingProcessMessageRouter(
-            IQueue incomingBaristaMessages, 
-            IChannel outgoingBaristaMessages, 
-            IQueue incomingCustomerMessages, 
-            IChannel outgoingCustomerMessages, 
-            IQueue incomingRegisterMessages, 
-            IChannel outgoingRegisterMessages, 
-            IQueue incomingControllerMessages, 
-            IQueue outgoingControllerMessages, 
-            IChannel abandonedMessagesChannel)
+        public OrderingProcessMessageRouter(IPeekableChannel incomingMessages,
+                                            IChannel outgoingBaristaMessages,
+                                            IChannel outgoingCustomerMessages,
+                                            IChannel outgoingRegisterMessages,
+                                            IPeekableChannel incomingControllerMessages,
+                                            IPeekableChannel outgoingControllerMessages,
+                                            IChannel abandonedMessagesChannel)
         {
-            _IncomingBaristaMessages = incomingBaristaMessages;
             _AbandonedMessagesChannel = abandonedMessagesChannel;
             _OutgoingControllerMessages = outgoingControllerMessages;
             _IncomingControllerMessages = incomingControllerMessages;
             _OutgoingRegisterMessages = outgoingRegisterMessages;
-            _IncomingRegisterMessages = incomingRegisterMessages;
             _OutgoingCustomerMessages = outgoingCustomerMessages;
-            _IncomingCustomerMessages = incomingCustomerMessages;
+            _IncomingMessages = incomingMessages;
             _OutgoingBaristaMessages = outgoingBaristaMessages;
         }
 
@@ -44,25 +36,11 @@ namespace StarbucksExample
         {
             while(!_Done)
             {
-                if (!_IncomingBaristaMessages.IsEmpty())
+                if(!_IncomingMessages.IsEmpty())
                 {
-                    var incomingBaristaMessage = _IncomingBaristaMessages.Dequeue();
-                    var appropriateOutboundChannelForBarista = _GetAppropriateOutboundChannelForBarista(incomingBaristaMessage);
-                    appropriateOutboundChannelForBarista.Enqueue(incomingBaristaMessage);
-                }
-
-                if (!_IncomingCustomerMessages.IsEmpty())
-                {
-                    var incomingCustomerMessage = _IncomingCustomerMessages.Dequeue();
-                    var appropriateOutboundChannelForCustomer = _GetAppropriateOutboundChannelForCustomer(incomingCustomerMessage);
-                    appropriateOutboundChannelForCustomer.Enqueue(incomingCustomerMessage);
-                }
-
-                if (!_IncomingRegisterMessages.IsEmpty())
-                {
-                    var incomingRegisterMessage = _IncomingRegisterMessages.Dequeue();
-                    var appropriateOutboundChannelForRegister = _GetAppropriateOutboundChannelForRegister(incomingRegisterMessage);
-                    appropriateOutboundChannelForRegister.Enqueue(incomingRegisterMessage);
+                    var message = _IncomingMessages.Dequeue();
+                    var messageChannel = _GetAppropriateChannelFor(message);
+                    messageChannel.Enqueue(message);
                 }
 
                 if (!_IncomingControllerMessages.IsEmpty())
@@ -77,6 +55,27 @@ namespace StarbucksExample
                     }
                 }
             }
+        }
+
+        private IChannel _GetAppropriateChannelFor(object incomingMessage)
+        {
+            if (incomingMessage is PaymentRequestMessage)
+                return _OutgoingCustomerMessages;
+            if (incomingMessage is DrinkOrderRequestMessage)
+                return _OutgoingBaristaMessages;
+
+            if (incomingMessage is DrinkRequestMessage ||
+                incomingMessage is PaymentResponseMessage)
+                return _OutgoingRegisterMessages;
+            if (incomingMessage is DrinkResponseMessage)
+                return _OutgoingCustomerMessages;
+            if (incomingMessage is HappyCustomerResponse)
+            {
+                Console.WriteLine("Another Happy Customer");
+                return _OutgoingControllerMessages;
+            }
+
+            return _AbandonedMessagesChannel;
         }
 
         private IChannel _GetAppropriateOutboundChannelForRegister(object incomingRegisterMessage)

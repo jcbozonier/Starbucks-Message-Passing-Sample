@@ -9,28 +9,24 @@ namespace StarbucksExample
     {
         public void Process()
         {
-            var baristaInboundChannel = new MyQueue();
+            var inboundChannel = new MyPeekableChannel();
+
             var baristaOutboundChannel = new ThreadSafeChannel();
-
-            var customerInboundChannel = new MyQueue();
             var customerOutboundChannel = new ThreadSafeChannel();
-
-            var registerInboundChannel = new MyQueue();
             var registerOutboundChannel = new ThreadSafeChannel();
 
-            IQueue controllerInboundChannel = new MyQueue();
-            IQueue controllerOutboundChannel = new MyQueue();
-            IChannel abandonedMessages = new MyQueue();
+            IPeekableChannel controllerInboundChannel = new MyPeekableChannel();
+            IPeekableChannel controllerOutboundChannel = new MyPeekableChannel();
+            IChannel abandonedMessages = new MyPeekableChannel();
 
-            var messageRouter = new OrderingProcessMessageRouter(baristaInboundChannel, baristaOutboundChannel,
-                                                          customerInboundChannel, customerOutboundChannel,
-                                                          registerInboundChannel, registerOutboundChannel,
+            var messageRouter = new OrderingProcessMessageRouter(inboundChannel, baristaOutboundChannel,
+                                                          customerOutboundChannel, registerOutboundChannel,
                                                           controllerInboundChannel, controllerOutboundChannel,
                                                           abandonedMessages);
 
-            var baristaActor = new BaristaActor(baristaInboundChannel, baristaOutboundChannel);
-            var customerActor = new CustomerActor(customerInboundChannel, customerOutboundChannel);
-            var registerActor = new RegisterActor(registerInboundChannel, registerOutboundChannel);
+            var baristaActor = new BaristaActor(inboundChannel, baristaOutboundChannel);
+            var customerActor = new CustomerActor(inboundChannel, customerOutboundChannel);
+            var registerActor = new RegisterActor(inboundChannel, registerOutboundChannel);
 
             ThreadPool.QueueUserWorkItem(x => messageRouter.Process());
             ThreadPool.QueueUserWorkItem(x => baristaActor.Process());

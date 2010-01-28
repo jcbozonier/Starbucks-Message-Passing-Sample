@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading;
 
 namespace StarbucksExample.MessagingSystem
@@ -8,12 +9,8 @@ namespace StarbucksExample.MessagingSystem
     ///
     public class ThreadSafeChannel : IChannel
     {
-        private System.Collections.Queue q = new System.Collections.Queue();
+        private Queue q = Queue.Synchronized(new Queue());
         private readonly ManualResetEvent newItemEntered = new ManualResetEvent(false);
-
-        public ThreadSafeChannel()
-        {
-        }
 
         public void Enqueue(object o)
         {
@@ -30,7 +27,7 @@ namespace StarbucksExample.MessagingSystem
 
             lock (this)
             {
-                object result = q.Dequeue();
+                var result = q.Dequeue();
                 if (q.Count == 0)
                     newItemEntered.Reset();
 
