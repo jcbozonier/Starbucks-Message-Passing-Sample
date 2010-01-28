@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 namespace StarbucksExample.MessagingSystem
 {
-    public class MyPeekableChannel : IPeekableChannel
+    public class NonBlockingChannel : IPeekableChannel
     {
         private readonly Queue _Queue;
 
-        public MyPeekableChannel()
+        public NonBlockingChannel()
         {
             _Queue = Queue.Synchronized(new Queue());
         }

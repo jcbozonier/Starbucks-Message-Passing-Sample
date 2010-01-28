@@ -9,20 +9,19 @@ namespace StarbucksExample
     {
         public void Process()
         {
-            var inboundChannel = new MyPeekableChannel();
+            var inboundChannel = new NonBlockingChannel();
 
-            var baristaOutboundChannel = new ThreadSafeChannel();
-            var customerOutboundChannel = new ThreadSafeChannel();
-            var registerOutboundChannel = new ThreadSafeChannel();
+            var baristaOutboundChannel = new ThreadBlockingChannel();
+            var customerOutboundChannel = new ThreadBlockingChannel();
+            var registerOutboundChannel = new ThreadBlockingChannel();
+            var abandonedMessages = new NonBlockingChannel();
 
-            IPeekableChannel controllerInboundChannel = new MyPeekableChannel();
-            IPeekableChannel controllerOutboundChannel = new MyPeekableChannel();
-            IChannel abandonedMessages = new MyPeekableChannel();
-
-            var messageRouter = new OrderingProcessMessageRouter(inboundChannel, baristaOutboundChannel,
-                                                          customerOutboundChannel, registerOutboundChannel,
-                                                          controllerInboundChannel, controllerOutboundChannel,
-                                                          abandonedMessages);
+            var messageRouter = new OrderingProcessMessageRouter(
+                inboundChannel, 
+                baristaOutboundChannel,
+                customerOutboundChannel, 
+                registerOutboundChannel,
+                abandonedMessages);
 
             var baristaActor = new BaristaActor(inboundChannel, baristaOutboundChannel);
             var customerActor = new CustomerActor(inboundChannel, customerOutboundChannel);

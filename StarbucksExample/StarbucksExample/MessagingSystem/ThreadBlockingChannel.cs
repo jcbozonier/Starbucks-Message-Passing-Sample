@@ -7,7 +7,7 @@ namespace StarbucksExample.MessagingSystem
     ///
     /// Summary description for ThreadSafeQueue.
     ///
-    public class ThreadSafeChannel : IChannel
+    public class ThreadBlockingChannel : IChannel
     {
         private Queue q = Queue.Synchronized(new Queue());
         private readonly ManualResetEvent newItemEntered = new ManualResetEvent(false);

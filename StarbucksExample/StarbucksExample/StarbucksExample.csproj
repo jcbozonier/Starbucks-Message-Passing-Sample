@@ -49,7 +49,7 @@
     <Compile Include="Messages\DrinkOrderRequestMessage.cs" />
     <Compile Include="Messages\TerminateProcessMessage.cs" />
     <Compile Include="MessagingSystem\IPeekableChannel.cs" />
-    <Compile Include="MessagingSystem\MyPeekableChannel.cs" />
+    <Compile Include="MessagingSystem\NonBlockingChannel.cs" />
     <Compile Include="OrderingProcessMessageRouter.cs" />
     <Compile Include="Actors\RegisterActor.cs" />
     <Compile Include="Actors\CustomerActor.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="Messages\PaymentRequestMessage.cs" />
     <Compile Include="Messages\PaymentResponseMessage.cs" />
     <Compile Include="MessagingSystem\IChannel.cs" />
-    <Compile Include="MessagingSystem\ThreadSafeChannel.cs" />
+    <Compile Include="MessagingSystem\ThreadBlockingChannel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StarbucksOrchestration.cs" />
   </ItemGroup>
