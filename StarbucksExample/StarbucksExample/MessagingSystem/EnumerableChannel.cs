@@ -21,7 +21,6 @@ namespace StarbucksExample.MessagingSystem
 
         T _Dequeue()
         {
-            Thread.Sleep(150);
             newItemEntered.WaitOne();
 
             lock (this)

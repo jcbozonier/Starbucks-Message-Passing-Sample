@@ -5,7 +5,7 @@ using StarbucksExample.MessagingSystem;
 
 namespace StarbucksExample.Actors
 {
-    public class BaristaActor
+    public class BaristaActor : ITaskable
     {
         private readonly IEnqueue _RequestChannel;
         private readonly IEnumerable<IMessage> _ResponseChannel;
@@ -21,6 +21,13 @@ namespace StarbucksExample.Actors
         {
             foreach(var incomingMessage in _ResponseChannel)
             {
+                var i = 100000;
+                var b = 0;
+                while (i-- > 0)
+                {
+                    b++;
+                }
+
                 var drinkOrderRequest = incomingMessage as DrinkOrderRequestMessage;
 
                 if(drinkOrderRequest != null)

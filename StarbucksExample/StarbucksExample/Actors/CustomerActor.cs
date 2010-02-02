@@ -7,7 +7,7 @@ using StarbucksExample.MessagingSystem;
 
 namespace StarbucksExample.Actors
 {
-    public class CustomerActor
+    public class CustomerActor : ITaskable
     {
         private readonly IEnqueue _RequestChannel;
         private readonly IEnumerable<IMessage> _ResponseChannel;
@@ -34,12 +34,18 @@ namespace StarbucksExample.Actors
 
         private void _SendOutDrinkRequests()
         {
-            int ordersToProcess = 14;
+            int ordersToProcess = 10000;
             var drinkRequests = Enumerable.Range(0, ordersToProcess).Select(
                 x => DrinkRequestMessage.Create(x.ToString(), "Tall", "Half-Caf Double Decaf")).ToArray();
 
             foreach(var drinkRequest in drinkRequests)
             {
+                var i = 100000;
+                var b = 0;
+                while (i-- > 0)
+                {
+                    b++;
+                }
                 _RequestChannel.Enqueue(drinkRequest);
             }
         }

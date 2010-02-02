@@ -30,11 +30,17 @@ namespace StarbucksExample
             var customerActor = new CustomerActor(inboundChannel, customerOutboundChannel);
             var registerActor = new RegisterActor(inboundChannel, registerOutboundChannel);
 
-            ThreadPool.QueueUserWorkItem(x => messageRouter.Process());
-            ThreadPool.QueueUserWorkItem(x => baristaActor.Process());
-            ThreadPool.QueueUserWorkItem(x => customerActor.Process());
-            ThreadPool.QueueUserWorkItem(x => registerActor.Process());
-            ThreadPool.QueueUserWorkItem(x => uiTask.Process());
+            //ThreadPool.QueueUserWorkItem(x => messageRouter.Process());
+            //ThreadPool.QueueUserWorkItem(x => baristaActor.Process());
+            //ThreadPool.QueueUserWorkItem(x => customerActor.Process());
+            //ThreadPool.QueueUserWorkItem(x => registerActor.Process());
+            //ThreadPool.QueueUserWorkItem(x => uiTask.Process());
+
+            new Thread(messageRouter.Process).Start();
+            new Thread(baristaActor.Process).Start();
+            new Thread(customerActor.Process).Start();
+            new Thread(registerActor.Process).Start();
+            new Thread(uiTask.Process).Start();
         }
     }
 }
