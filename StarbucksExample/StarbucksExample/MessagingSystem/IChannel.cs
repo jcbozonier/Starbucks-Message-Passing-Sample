@@ -1,8 +1,13 @@
 ﻿namespace StarbucksExample.MessagingSystem
 {
-    public interface IChannel
-    {
+    public interface IEnqueue {
         void Enqueue(object o);
+    }
+
+    public interface IDequeue {
         object Dequeue();
     }
+
+    public interface IChannel : IEnqueue, IDequeue
+    {}
 }

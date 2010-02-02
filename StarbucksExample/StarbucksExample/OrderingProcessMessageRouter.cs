@@ -8,16 +8,16 @@ namespace StarbucksExample
     {
         private bool _Done;
         private readonly IPeekableChannel _IncomingMessages;
-        private readonly IChannel _OutgoingBaristaMessages;
-        private readonly IChannel _OutgoingCustomerMessages;
-        private readonly IChannel _OutgoingRegisterMessages;
-        private readonly IChannel _AbandonedMessagesChannel;
+        private readonly IEnqueue _OutgoingBaristaMessages;
+        private readonly IEnqueue _OutgoingCustomerMessages;
+        private readonly IEnqueue _OutgoingRegisterMessages;
+        private readonly IEnqueue _AbandonedMessagesChannel;
 
         public OrderingProcessMessageRouter(IPeekableChannel incomingMessages,
-                                            IChannel outgoingBaristaMessages,
-                                            IChannel outgoingCustomerMessages,
-                                            IChannel outgoingRegisterMessages,
-                                            IChannel abandonedMessagesChannel)
+                                            IEnqueue outgoingBaristaMessages,
+                                            IEnqueue outgoingCustomerMessages,
+                                            IEnqueue outgoingRegisterMessages,
+                                            IEnqueue abandonedMessagesChannel)
         {
             _AbandonedMessagesChannel = abandonedMessagesChannel;
             _OutgoingRegisterMessages = outgoingRegisterMessages;
@@ -39,7 +39,7 @@ namespace StarbucksExample
             }
         }
 
-        private IChannel _GetAppropriateChannelFor(object incomingMessage)
+        private IEnqueue _GetAppropriateChannelFor(object incomingMessage)
         {
             if (incomingMessage is PaymentRequestMessage)
                 return _OutgoingCustomerMessages;

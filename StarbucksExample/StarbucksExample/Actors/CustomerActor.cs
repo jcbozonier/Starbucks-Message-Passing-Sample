@@ -7,11 +7,11 @@ namespace StarbucksExample.Actors
 {
     public class CustomerActor
     {
-        private readonly IChannel _RequestChannel;
-        private readonly IChannel _ResponseChannel;
+        private readonly IEnqueue _RequestChannel;
+        private readonly IDequeue _ResponseChannel;
         private bool _Done;
 
-        public CustomerActor(IChannel requestChannel, IChannel responseChannel)
+        public CustomerActor(IEnqueue requestChannel, IDequeue responseChannel)
         {
             new Guid().ToString();
             _RequestChannel = requestChannel;
