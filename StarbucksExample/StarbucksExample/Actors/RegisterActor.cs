@@ -30,7 +30,7 @@ namespace StarbucksExample.Actors
             }
         }
 
-        private object _Process(object incomingMessage)
+        private IMessage _Process(object incomingMessage)
         {
             var customerResponse = incomingMessage as DrinkRequestMessage;
             var paymentResponse = incomingMessage as PaymentResponseMessage;

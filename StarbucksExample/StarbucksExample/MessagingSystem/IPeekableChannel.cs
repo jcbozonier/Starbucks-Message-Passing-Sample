@@ -2,7 +2,7 @@
 
 namespace StarbucksExample.MessagingSystem
 {
-    public interface IPeekableChannel : IChannel
+    public interface IPeekableChannel : IEnqueue, IDequeue
     {
         bool IsEmpty();
     }

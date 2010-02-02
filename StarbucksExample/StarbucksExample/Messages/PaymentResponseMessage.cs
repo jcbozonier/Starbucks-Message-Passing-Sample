@@ -1,6 +1,6 @@
 namespace StarbucksExample.Messages
 {
-    public class PaymentResponseMessage
+    public class PaymentResponseMessage : IMessage
     {
         public string RegisterId { get; private set; }
         public string CustomerId { get; private set; }

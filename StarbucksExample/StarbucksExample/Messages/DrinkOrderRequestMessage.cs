@@ -2,7 +2,7 @@ using System;
 
 namespace StarbucksExample.Messages
 {
-    public class DrinkOrderRequestMessage
+    public class DrinkOrderRequestMessage : IMessage
     {
         public string RegisterId { get; private set; }
         public string Size { get; private set; }

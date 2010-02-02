@@ -2,7 +2,7 @@ using System;
 
 namespace StarbucksExample.Messages
 {
-    public class PaymentRequestMessage
+    public class PaymentRequestMessage : IMessage
     {
         public readonly DrinkRequestMessage CustomerOrder;
 

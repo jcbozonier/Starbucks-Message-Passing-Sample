@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StarbucksExample.Messages
 {
-    public class TerminateProcessMessage : IMessage
+    public interface IMessage
     {
     }
 }

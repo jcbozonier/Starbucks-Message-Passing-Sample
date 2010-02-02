@@ -1,6 +1,6 @@
 namespace StarbucksExample.Messages
 {
-    public class HappyCustomerResponse
+    public class HappyCustomerResponse : IMessage
     {
         public string CustomerId { get; private set; }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
@@ -8,10 +9,9 @@ namespace StarbucksExample.Actors
     public class CustomerActor
     {
         private readonly IEnqueue _RequestChannel;
-        private readonly IDequeue _ResponseChannel;
-        private bool _Done;
+        private readonly IEnumerable _ResponseChannel;
 
-        public CustomerActor(IEnqueue requestChannel, IDequeue responseChannel)
+        public CustomerActor(IEnqueue requestChannel, IEnumerable responseChannel)
         {
             new Guid().ToString();
             _RequestChannel = requestChannel;
@@ -22,9 +22,8 @@ namespace StarbucksExample.Actors
         {
             _SendOutDrinkRequests();
 
-            while (!_Done)
+            foreach(var incomingMessage in _ResponseChannel)
             {
-                var incomingMessage = _ResponseChannel.Dequeue();
                 var outgoingMessage = _ProcessMessage(incomingMessage);
 
                 if (outgoingMessage != null)
@@ -41,7 +40,7 @@ namespace StarbucksExample.Actors
                 _RequestChannel.Enqueue(drinkRequest);
         }
 
-        private object _ProcessMessage(object incomingMessage)
+        private static IMessage _ProcessMessage(object incomingMessage)
         {
             var registerResponse = incomingMessage as PaymentRequestMessage;
             var myDrink = incomingMessage as DrinkResponseMessage;
@@ -52,9 +51,6 @@ namespace StarbucksExample.Actors
             
             if(myDrink != null)
                 return new HappyCustomerResponse(myDrink.CustomerId);
-
-            if (terminateProcessRequest != null)
-                _Done = true;
 
             if (incomingMessage == null)
                 throw new InvalidOperationException("Received null message and this is invalid!");

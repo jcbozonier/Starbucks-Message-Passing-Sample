@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading;
+using StarbucksExample.Messages;
 
 namespace StarbucksExample.MessagingSystem
 {
@@ -12,7 +13,7 @@ namespace StarbucksExample.MessagingSystem
         private Queue q = Queue.Synchronized(new Queue());
         private readonly ManualResetEvent newItemEntered = new ManualResetEvent(false);
 
-        public void Enqueue(object o)
+        public void Enqueue(IMessage o)
         {
             lock (this)
             {
@@ -21,7 +22,7 @@ namespace StarbucksExample.MessagingSystem
             }
         }
 
-        public object Dequeue()
+        public IMessage Dequeue()
         {
             newItemEntered.WaitOne();
 
@@ -31,7 +32,7 @@ namespace StarbucksExample.MessagingSystem
                 if (q.Count == 0)
                     newItemEntered.Reset();
 
-                return result;
+                return (IMessage)result;
             }
 
         }

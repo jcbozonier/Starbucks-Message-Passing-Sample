@@ -1,6 +1,6 @@
 namespace StarbucksExample.Messages
 {
-    public class DrinkRequestMessage
+    public class DrinkRequestMessage : IMessage
     {
         public string CustomerId { get; private set; }
         public string Size { get; private set; }

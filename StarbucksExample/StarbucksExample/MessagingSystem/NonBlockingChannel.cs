@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using StarbucksExample.Messages;
 
 namespace StarbucksExample.MessagingSystem
 {
@@ -12,14 +13,14 @@ namespace StarbucksExample.MessagingSystem
             _Queue = Queue.Synchronized(new Queue());
         }
 
-        public void Enqueue(object o)
+        public void Enqueue(IMessage o)
         {
             _Queue.Enqueue(o);
         }
 
-        public object Dequeue()
+        public IMessage Dequeue()
         {
-            return _Queue.Dequeue();
+            return (IMessage)_Queue.Dequeue();
         }
 
         public bool IsEmpty()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using StarbucksExample.Actors;
+using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
 namespace StarbucksExample
@@ -11,9 +12,9 @@ namespace StarbucksExample
         {
             var inboundChannel = new NonBlockingChannel();
 
-            var baristaOutboundChannel = new ThreadBlockingChannel();
-            var customerOutboundChannel = new ThreadBlockingChannel();
-            var registerOutboundChannel = new EnumerableChannel();
+            var baristaOutboundChannel = new EnumerableChannel<IMessage>();
+            var customerOutboundChannel = new EnumerableChannel<IMessage>();
+            var registerOutboundChannel = new EnumerableChannel<IMessage>();
             var abandonedMessages = new NonBlockingChannel();
 
             var messageRouter = new OrderingProcessMessageRouter(

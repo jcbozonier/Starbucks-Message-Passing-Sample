@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -7,10 +8,10 @@ namespace StarbucksExample.Actors
     public class BaristaActor
     {
         private readonly IEnqueue _RequestChannel;
-        private readonly IDequeue _ResponseChannel;
+        private readonly IEnumerable _ResponseChannel;
         private bool _Done;
 
-        public BaristaActor(IEnqueue requestChannel, IDequeue responseChannel)
+        public BaristaActor(IEnqueue requestChannel, IEnumerable responseChannel)
         {
             new Guid().ToString();
             _RequestChannel = requestChannel;
@@ -19,9 +20,8 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            while (!_Done)
+            foreach(var incomingMessage in _ResponseChannel)
             {
-                var incomingMessage = _ResponseChannel.Dequeue();
                 var drinkOrderRequest = incomingMessage as DrinkOrderRequestMessage;
                 var terminationRequest = incomingMessage as TerminateProcessMessage;
 

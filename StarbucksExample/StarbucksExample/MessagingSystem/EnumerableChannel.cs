@@ -1,15 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using StarbucksExample.Messages;
 
 namespace StarbucksExample.MessagingSystem
 {
-    public class EnumerableChannel : IEnqueue, IEnumerable, IEnumerator
+    public class EnumerableChannel<T> : IEnqueue, IEnumerable<T>, IEnumerator<T>
     {
         private Queue q = Queue.Synchronized(new Queue());
         private readonly ManualResetEvent newItemEntered = new ManualResetEvent(false);
 
-        public void Enqueue(object o)
+        public void Enqueue(IMessage o)
         {
             lock (this)
             {
@@ -18,7 +20,7 @@ namespace StarbucksExample.MessagingSystem
             }
         }
 
-        object _Dequeue()
+        T _Dequeue()
         {
             newItemEntered.WaitOne();
 
@@ -28,12 +30,12 @@ namespace StarbucksExample.MessagingSystem
                 if (q.Count == 0)
                     newItemEntered.Reset();
 
-                return result;
+                return (T)result;
             }
 
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return this;
         }
@@ -50,9 +52,21 @@ namespace StarbucksExample.MessagingSystem
 
         }
 
-        public object Current
+        object IEnumerator.Current { get { return Current; } }
+
+        public T Current
         {
             get; private set;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }
