@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
@@ -9,9 +9,9 @@ namespace StarbucksExample.Actors
     public class CustomerActor
     {
         private readonly IEnqueue _RequestChannel;
-        private readonly IEnumerable _ResponseChannel;
+        private readonly IEnumerable<IMessage> _ResponseChannel;
 
-        public CustomerActor(IEnqueue requestChannel, IEnumerable responseChannel)
+        public CustomerActor(IEnqueue requestChannel, IEnumerable<IMessage> responseChannel)
         {
             new Guid().ToString();
             _RequestChannel = requestChannel;
@@ -44,7 +44,6 @@ namespace StarbucksExample.Actors
         {
             var registerResponse = incomingMessage as PaymentRequestMessage;
             var myDrink = incomingMessage as DrinkResponseMessage;
-            var terminateProcessRequest = incomingMessage as TerminateProcessMessage;
 
             if(registerResponse != null)
                 return PaymentResponseMessage.Create(registerResponse.CustomerId, registerResponse.RegisterId, registerResponse.PaymentAmountRequested, registerResponse.CustomerOrder);
