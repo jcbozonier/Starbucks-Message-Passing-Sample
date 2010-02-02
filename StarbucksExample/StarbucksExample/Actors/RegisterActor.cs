@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -7,11 +10,11 @@ namespace StarbucksExample.Actors
     public class RegisterActor
     {
         private readonly IChannel _RequestChannel;
-        private readonly IChannel _ResponseChannel;
+        private readonly IEnumerable _ResponseChannel;
         public readonly string RegisterId;
         private bool _Done;
 
-        public RegisterActor(IChannel requestChannel, IChannel responseChannel)
+        public RegisterActor(IChannel requestChannel, IEnumerable responseChannel)
         {
             RegisterId = new Guid().ToString();
             _RequestChannel = requestChannel;
@@ -20,9 +23,8 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            while (!_Done)
+            foreach (var incomingMessage in _ResponseChannel)
             {
-                var incomingMessage = _ResponseChannel.Dequeue();
                 var outgoingMessage = _Process(incomingMessage);
 
                 if (outgoingMessage != null)

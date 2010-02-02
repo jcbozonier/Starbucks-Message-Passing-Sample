@@ -5,4 +5,6 @@
         void Enqueue(object o);
         object Dequeue();
     }
-}
+
+    public interface
+I}

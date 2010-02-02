@@ -13,7 +13,7 @@ namespace StarbucksExample
 
             var baristaOutboundChannel = new ThreadBlockingChannel();
             var customerOutboundChannel = new ThreadBlockingChannel();
-            var registerOutboundChannel = new ThreadBlockingChannel();
+            var registerOutboundChannel = new EnumerableChannel();
             var abandonedMessages = new NonBlockingChannel();
 
             var messageRouter = new OrderingProcessMessageRouter(

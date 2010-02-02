@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -10,13 +10,13 @@ namespace StarbucksExample
         private readonly IPeekableChannel _IncomingMessages;
         private readonly IChannel _OutgoingBaristaMessages;
         private readonly IChannel _OutgoingCustomerMessages;
-        private readonly IChannel _OutgoingRegisterMessages;
+        private readonly EnumerableChannel _OutgoingRegisterMessages;
         private readonly IChannel _AbandonedMessagesChannel;
 
         public OrderingProcessMessageRouter(IPeekableChannel incomingMessages,
                                             IChannel outgoingBaristaMessages,
                                             IChannel outgoingCustomerMessages,
-                                            IChannel outgoingRegisterMessages,
+                                            EnumerableChannel outgoingRegisterMessages,
                                             IChannel abandonedMessagesChannel)
         {
             _AbandonedMessagesChannel = abandonedMessagesChannel;
