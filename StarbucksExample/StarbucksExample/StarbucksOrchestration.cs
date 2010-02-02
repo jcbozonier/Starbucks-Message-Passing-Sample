@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using StarbucksExample.Actors;
 using StarbucksExample.Messages;
@@ -8,7 +9,8 @@ namespace StarbucksExample
 {
     public class StarbucksOrchestration
     {
-        public void Process()
+        public void Process(NonBlockingChannel statusChannel,
+                            ITaskable uiTask)
         {
             var inboundChannel = new NonBlockingChannel();
             var baristaOutboundChannel = new EnumerableChannel<IMessage>();
@@ -21,7 +23,8 @@ namespace StarbucksExample
                 baristaOutboundChannel,
                 customerOutboundChannel, 
                 registerOutboundChannel,
-                abandonedMessages);
+                abandonedMessages,
+                statusChannel);
 
             var baristaActor = new BaristaActor(inboundChannel, baristaOutboundChannel);
             var customerActor = new CustomerActor(inboundChannel, customerOutboundChannel);
@@ -31,8 +34,7 @@ namespace StarbucksExample
             ThreadPool.QueueUserWorkItem(x => baristaActor.Process());
             ThreadPool.QueueUserWorkItem(x => customerActor.Process());
             ThreadPool.QueueUserWorkItem(x => registerActor.Process());
-
-            Console.ReadLine();
+            ThreadPool.QueueUserWorkItem(x => uiTask.Process());
         }
     }
 }

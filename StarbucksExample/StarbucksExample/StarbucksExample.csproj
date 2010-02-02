@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\BaristaActor.cs" />
+    <Compile Include="Actors\ITaskable.cs" />
     <Compile Include="Messages\DrinkOrderRequestMessage.cs" />
     <Compile Include="Messages\IMessage.cs" />
     <Compile Include="Messages\TerminateProcessMessage.cs" />

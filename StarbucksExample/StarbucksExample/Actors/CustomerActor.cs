@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -33,11 +34,14 @@ namespace StarbucksExample.Actors
 
         private void _SendOutDrinkRequests()
         {
-            var drinkRequests = Enumerable.Range(0, 100000).Select(
+            int ordersToProcess = 14;
+            var drinkRequests = Enumerable.Range(0, ordersToProcess).Select(
                 x => DrinkRequestMessage.Create(x.ToString(), "Tall", "Half-Caf Double Decaf")).ToArray();
 
             foreach(var drinkRequest in drinkRequests)
+            {
                 _RequestChannel.Enqueue(drinkRequest);
+            }
         }
 
         private static IMessage _ProcessMessage(object incomingMessage)
@@ -53,6 +57,7 @@ namespace StarbucksExample.Actors
 
             if (incomingMessage == null)
                 throw new InvalidOperationException("Received null message and this is invalid!");
+
 
             throw new InvalidOperationException("Received an incorrect response type for this actor.");
         }

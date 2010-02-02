@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using StarbucksExample.Messages;
@@ -22,6 +21,7 @@ namespace StarbucksExample.MessagingSystem
 
         T _Dequeue()
         {
+            Thread.Sleep(150);
             newItemEntered.WaitOne();
 
             lock (this)

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
@@ -12,14 +13,17 @@ namespace StarbucksExample
         private readonly IEnqueue _OutgoingCustomerMessages;
         private readonly IEnqueue _OutgoingRegisterMessages;
         private readonly IEnqueue _AbandonedMessagesChannel;
+        private readonly IEnqueue _StatusChannel;
 
         public OrderingProcessMessageRouter(IPeekableChannel incomingMessages,
                                             IEnqueue outgoingBaristaMessages,
                                             IEnqueue outgoingCustomerMessages,
                                             IEnqueue outgoingRegisterMessages,
-                                            IEnqueue abandonedMessagesChannel)
+                                            IEnqueue abandonedMessagesChannel, 
+                                            IEnqueue statusChannel)
         {
             _AbandonedMessagesChannel = abandonedMessagesChannel;
+            _StatusChannel = statusChannel;
             _OutgoingRegisterMessages = outgoingRegisterMessages;
             _OutgoingCustomerMessages = outgoingCustomerMessages;
             _IncomingMessages = incomingMessages;
@@ -35,6 +39,12 @@ namespace StarbucksExample
                     var message = _IncomingMessages.Dequeue();
                     var messageChannel = _GetAppropriateChannelFor(message);
                     messageChannel.Enqueue(message);
+
+                    _StatusChannel.Enqueue(message);
+                }
+                else
+                {
+                    Thread.Sleep(100);
                 }
             }
         }
@@ -50,10 +60,6 @@ namespace StarbucksExample
                 return _OutgoingRegisterMessages;
             if (incomingMessage is DrinkResponseMessage)
                 return _OutgoingCustomerMessages;
-            if (incomingMessage is HappyCustomerResponse)
-            {
-                Console.WriteLine("Another Happy Customer");
-            }
 
             return _AbandonedMessagesChannel;
         }

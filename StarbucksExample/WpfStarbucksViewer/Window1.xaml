@@ -1,0 +1,15 @@
+﻿<Window x:Class="WpfStarbucksViewer.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Window1" Height="768" Width="1024">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ListBox Grid.Column="0" ItemsSource="{Binding Path=CustomerStatusMessages }" />
+        <ListBox Grid.Column="1" ItemsSource="{Binding Path=RegisterStatusMessages }" />
+        <ListBox Grid.Column="2" ItemsSource="{Binding Path=BaristaStatusMessages }" />
+    </Grid>
+</Window>
