@@ -11,7 +11,6 @@ namespace StarbucksExample
         public void Process()
         {
             var inboundChannel = new NonBlockingChannel();
-
             var baristaOutboundChannel = new EnumerableChannel<IMessage>();
             var customerOutboundChannel = new EnumerableChannel<IMessage>();
             var registerOutboundChannel = new EnumerableChannel<IMessage>();

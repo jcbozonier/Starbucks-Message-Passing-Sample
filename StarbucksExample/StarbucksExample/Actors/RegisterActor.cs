@@ -1,4 +1,6 @@
+
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
@@ -20,7 +22,7 @@ namespace StarbucksExample.Actors
 
         public void Process()
         {
-            foreach(var incomingMessage in _ResponseChannel)
+            foreach (var incomingMessage in _ResponseChannel)
             {
                 var outgoingMessage = _Process(incomingMessage);
 

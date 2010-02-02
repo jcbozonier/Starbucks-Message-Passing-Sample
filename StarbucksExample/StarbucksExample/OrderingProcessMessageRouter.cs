@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using StarbucksExample.Messages;
 using StarbucksExample.MessagingSystem;
 
